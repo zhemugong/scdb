@@ -18,8 +18,7 @@
             <h1>二:首页</h1>
                 <h2>信息管理模块:</h2>
                     <h3>
-                        <el-image :src="require('@/assets/images/photo.png')"
-                                 style="width:80%; height:400px;margin-bottom:10px;" fit="fill"></el-image>
+                       
                         <h3>1.点击单个添加</h3>
                         <h3>
                             <strong>2.批量添加:</strong>首先点击批量添加，选择excel文件进行上传，上传完毕之后点击数据上传即可<br/>

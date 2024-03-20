@@ -1,8 +1,23 @@
 <template>
     <div class="login">
         <div class="info">
-            <span class="title">欢迎登录学生选课管理系统</span>
-            <el-form :model="login_Form" ref="login_Form" :rules="rules" class="demo-ruleForm">
+            <span class="title">欢迎登录学生选课管理系统</span><br><br>
+            <el-row :gutter="10">
+                <el-switch
+                    style="display: block"
+                    v-model="pageMode"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                    active-text="登录"
+                    inactive-text="注册">
+                </el-switch>
+            </el-row>
+            
+            
+            
+
+            
+            <el-form :model="login_Form" ref="login_Form" :rules="rules" class="demo-ruleForm" v-if="pageMode"> 
                 <el-form-item prop="sno">
                     <el-input type="text" v-model="login_Form.sno" class="login_item" placeholder="请输入学号" clearable></el-input>
                 </el-form-item>
@@ -11,6 +26,22 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" class="login_item" @click="login('login_Form')">登录</el-button>
+                </el-form-item>
+                <el-link :underline="false"  type="primary" @click="findPasswordDialogVisible=true">找回密码<i class="el-icon-view el-icon--right"></i></el-link>
+            </el-form>
+
+            <el-form :model="login_Form" ref="register_Form" :rules="rules" class="demo-ruleForm" v-if="!pageMode">
+                <el-form-item>
+                    <el-input type="text" v-model="register_Form.sno" class="login_item" placeholder="请输入学号" clearable></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input type="password" v-model="register_Form.password" class="login_item" placeholder="请输入密码" clearable></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input type="password" v-model="register_Form.repassword" class="login_item" placeholder="再次输入密码" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" class="login_item" @click="register()">注册</el-button>
                 </el-form-item>
                 <el-link :underline="false"  type="primary" @click="findPasswordDialogVisible=true">找回密码<i class="el-icon-view el-icon--right"></i></el-link>
             </el-form>
@@ -40,6 +71,7 @@
         name: "login",
         data(){
             return {
+                pageMode: true,
                 findPasswordForm:{
                     sno:'',
                     sid:''
@@ -57,15 +89,36 @@
                         { min: 5, max: 20, message: '长度在 5到 20个字符', trigger: 'blur'}],
                     sid:[{required:true,message:'请输入身份证号',trigger:'blur'},
                         {pattern:/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,message:'请输入正确的身份证号码',trigger:'blur'}
-                        ]
+                        ],
+       
                 },
                 login_Form: {
                     sno: '',
                     password: ''
+                },
+                register_Form: {
+                    sno: '',
+                    password: '',
+                    repassword:''
                 }
             };
         },
         methods:{
+            register() {
+                var relForm;
+                if(this.register_Form.password === this.register_Form.repassword) {
+                    relForm = {
+                        sno: this.register_Form.sno,
+                        password: this.register_Form.password
+                    }
+
+                    this.$axios({
+                        method:'post',
+                        url:this.apiUrl.login,
+                        data:formData
+                    })
+                }
+            },
             findPassword(formName){
                 //找回密码
                 this.$refs[formName].validate((valid) => {
